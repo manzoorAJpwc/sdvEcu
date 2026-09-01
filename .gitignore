@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# PyInstaller
+dist/
+*.spec
+
+# VS Code
+.vscode/
+
+# Linux
+*.log
+
+#Build artificats
+*/build/*
+*/executables/*
+
+#simulation files
+simRepo/*
