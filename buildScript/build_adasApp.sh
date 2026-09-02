@@ -2,9 +2,9 @@
 
 set -e
 
-APP_NAME=adasApp
+APP_NAME=appAdas
 
-SRC_DIR="../adasApp"
+SRC_DIR="../appAdas"
 VENV_DIR="../tools/pyEnv/.venv"
 
 # One level above buildScript
@@ -27,8 +27,8 @@ python -m PyInstaller \
   --distpath "${OUT_DIR}" \
   --workpath "${BUILD_DIR}/dms" \
   --specpath "${BUILD_DIR}" \
-  --add-data "../${SRC_DIR}/haarcascade_Lib/haarcascade_frontalface_default.xml:." \
-  --add-data "../${SRC_DIR}/haarcascade_Lib/haarcascade_eye.xml:." \
+  --add-data "../${SRC_DIR}/lib_haarcascade/haarcascade_frontalface_default.xml:." \
+  --add-data "../${SRC_DIR}/lib_haarcascade/haarcascade_eye.xml:." \
   "${SRC_DIR}/dms/dmsApp.py"
 
 echo "Building LDW..."
@@ -47,9 +47,9 @@ python -m PyInstaller \
   --distpath "${OUT_DIR}" \
   --workpath "${BUILD_DIR}/fcw" \
   --specpath "${BUILD_DIR}" \
-  --add-data "../${SRC_DIR}/haarcascade_Lib/haarcascade_frontalface_default.xml:." \
-  --add-data "../${SRC_DIR}/objDet_Lib/MobileNetSSD_deploy.prototxt:." \
-  --add-data "../${SRC_DIR}/objDet_Lib/MobileNetSSD_deploy.caffemodel:." \
+  --add-data "../${SRC_DIR}/lib_haarcascade/haarcascade_frontalface_default.xml:." \
+  --add-data "../${SRC_DIR}/lib_objDet/MobileNetSSD_deploy.prototxt:." \
+  --add-data "../${SRC_DIR}/lib_objDet/MobileNetSSD_deploy.caffemodel:." \
   "${SRC_DIR}/fcw/fcw_object.py"
 
 #deactivate

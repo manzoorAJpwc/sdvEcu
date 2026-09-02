@@ -311,7 +311,7 @@ void processFile(const std::string &csvPath, const std::string &batteryId) {
 }
 
 int main(int argc, char** argv) {
-    std::string inputDir = "data/Processed";
+    std::string inputDir = "../../../simRepo/batteryData/Processed";
     if (argc >= 2) inputDir = argv[1];
 
     int count = 0;
