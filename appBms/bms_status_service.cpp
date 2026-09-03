@@ -310,22 +310,99 @@ void processFile(const std::string &csvPath, const std::string &batteryId) {
     std::cout << "Saved: " << jsonPath << "\n";
 }
 
-int main(int argc, char** argv) {
-    std::string inputDir = "../../../simRepo/batteryData/Processed";
-    if (argc >= 2) inputDir = argv[1];
+int main(int argc, char** argv)
+{
+    fs::path inputDir;
 
-    int count = 0;
-    for (const auto &entry : fs::directory_iterator(inputDir)) {
-        std::string path = entry.path().string();
-        if (entry.path().extension() == ".csv" &&
-            path.find("_SOH") == std::string::npos &&
-            path.find("_status") == std::string::npos) {
-            std::string batteryId = entry.path().stem().string();
-            processFile(path, batteryId);
-            count++;
+    if (argc >= 2) {
+        // Explicit path supplied by the user
+        inputDir = fs::path(argv[1]);
+    } else {
+        try {
+            /*
+             * Executable location:
+             *   sdvEcu/out/executables/appBms/bms_status_service
+             *
+             * Data location:
+             *   sdvEcu/simRepo/batteryData/Processed
+             *
+             * From executable directory:
+             *   ../../../simRepo/batteryData/Processed
+             */
+            const fs::path executablePath =
+                fs::canonical("/proc/self/exe");
+
+            const fs::path executableDir =
+                executablePath.parent_path();
+
+            inputDir =
+                executableDir /
+                "../../../simRepo/batteryData/Processed";
+
+            inputDir = fs::weakly_canonical(inputDir);
+        }
+        catch (const fs::filesystem_error& error) {
+            std::cerr
+                << "Failed to determine executable location: "
+                << error.what() << "\n";
+            return 1;
         }
     }
 
-    std::cout << "\n=== Done. Processed " << count << " battery files. ===\n";
+    std::cout << "Executable: "
+              << fs::canonical("/proc/self/exe") << "\n";
+
+    std::cout << "Input directory: "
+              << fs::absolute(inputDir) << "\n";
+
+    if (!fs::exists(inputDir)) {
+        std::cerr
+            << "Error: Input directory does not exist:\n"
+            << fs::absolute(inputDir) << "\n";
+        return 1;
+    }
+
+    if (!fs::is_directory(inputDir)) {
+        std::cerr
+            << "Error: Input path is not a directory:\n"
+            << fs::absolute(inputDir) << "\n";
+        return 1;
+    }
+
+    int count = 0;
+
+    try {
+        for (const auto& entry : fs::directory_iterator(inputDir)) {
+            if (!entry.is_regular_file()) {
+                continue;
+            }
+
+            const fs::path& filePath = entry.path();
+            const std::string filename = filePath.filename().string();
+
+            if (filePath.extension() == ".csv" &&
+                filename.find("_SOH") == std::string::npos &&
+                filename.find("_status") == std::string::npos) {
+
+                const std::string batteryId =
+                    filePath.stem().string();
+
+                processFile(filePath.string(), batteryId);
+                count++;
+            }
+        }
+    }
+    catch (const fs::filesystem_error& error) {
+        std::cerr
+            << "Filesystem error while reading input directory:\n"
+            << error.what() << "\n";
+        return 1;
+    }
+
+    std::cout
+        << "\n=== Done. Processed "
+        << count
+        << " battery files. ===\n";
+
     return 0;
 }

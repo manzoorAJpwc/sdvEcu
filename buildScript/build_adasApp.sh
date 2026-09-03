@@ -5,7 +5,7 @@ set -e
 APP_NAME=appAdas
 
 SRC_DIR="../appAdas"
-VENV_DIR="../tools/pyEnv/.venv"
+VENV_DIR="../tools/pyEnv/sdvEnv"
 
 # One level above buildScript
 ROOT_DIR=".."

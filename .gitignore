@@ -3,8 +3,7 @@ __pycache__/
 *.pyc
 
 # Virtual environments
-.venv/
-venv/
+tools/pyEnv/*
 
 # PyInstaller
 dist/
@@ -17,8 +16,7 @@ dist/
 *.log
 
 #Build artificats
-*/build/*
-*/executables/*
+out/*
 
 #simulation files
 simRepo/*
